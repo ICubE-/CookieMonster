@@ -2054,13 +2054,36 @@ CM.Disp.AddMenuStats = function(title) {
 		var neededCook = Game.HowManyCookiesReset(possiblePresMax + 1) - (CM.Cache.RealCookiesEarned + Game.cookiesReset + CM.Cache.WrinkGodBank + (choEgg ? CM.Cache.lastChoEgg : 0));
 
 		stats.appendChild(listing(listingQuest('Prestige Level (CUR / MAX)', 'PrestMaxTooltipPlaceholder'),  document.createTextNode(Beautify(Game.prestige) + ' / ' + Beautify(possiblePresMax))));
-		stats.appendChild(listing('Last 6 Digits Of Max Prestige Level',  document.createTextNode(Beautify(possiblePresMax % 1000000))));
 		var cookiesNextFrag = document.createDocumentFragment();
 		cookiesNextFrag.appendChild(document.createTextNode(Beautify(neededCook)));
 		var cookiesNextSmall = document.createElement('small');
 		cookiesNextSmall.textContent = ' (' + (CM.Disp.FormatTime(neededCook / CM.Cache.AvgCPSChoEgg, 1)) + ')';
 		cookiesNextFrag.appendChild(cookiesNextSmall);
 		stats.appendChild(listing(listingQuest('Cookies To Next Level', 'NextPrestTooltipPlaceholder'), cookiesNextFrag));
+
+		// Help for Prestige upgrades "Lucky digit", "Lucky number", "Lucky payout" by ICubE
+		var lastSixDigitsOfMaxPrestigeLevel = possiblePresMax % 1000000;
+		stats.appendChild(listing('Last Six Digits Of Max Prestige Level',  document.createTextNode(Beautify(lastSixDigitsOfMaxPrestigeLevel))));
+		var neededCook777;
+		if(lastSixDigitsOfMaxPrestigeLevel == 777777) {
+			neededCook777 = 0;
+		} else {
+			var prestigeLevelFor777;
+			if(lastSixDigitsOfMaxPrestigeLevel > 777777) {
+				prestigeLevelFor777 = (Math.floor(possiblePresMax / 1000000) + 1) * 1000000 + 777777;
+			} else {
+				prestigeLevelFor777 = Math.floor(possiblePresMax / 1000000) * 1000000 + 777777;
+			}
+			neededCook777 = Game.HowManyCookiesReset(prestigeLevelFor777) - (CM.Cache.RealCookiesEarned + Game.cookiesReset + CM.Cache.WrinkGodBank + (choEgg ? CM.Cache.lastChoEgg : 0));
+		}
+		var cookiesNextFrag777 = document.createDocumentFragment();
+		cookiesNextFrag777.appendChild(document.createTextNode(Beautify(neededCook777)));
+		var cookiesNextSmall777 = document.createElement('small');
+		cookiesNextSmall777.textContent = ' (' + (CM.Disp.FormatTime(neededCook777 / CM.Cache.AvgCPSChoEgg, 1)) + ')';
+		cookiesNextFrag777.appendChild(cookiesNextSmall777);
+		stats.appendChild(listing('Cookies To Next ~777,777', cookiesNextFrag777));
+
+
 		stats.appendChild(listing(listingQuest('Heavenly Chips (CUR / MAX)', 'HeavenChipMaxTooltipPlaceholder'),  document.createTextNode(Beautify(Game.heavenlyChips) + ' / ' + Beautify((possiblePresMax - Game.prestige) + Game.heavenlyChips))));
 		var resetBonus = CM.Sim.ResetBonus(possiblePresMax);
 		var resetFrag = document.createDocumentFragment();
